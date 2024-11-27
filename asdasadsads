@@ -1,6 +1,12 @@
 import serial
 import time
 from plyer import notification
+from PIL import Image
+# Open the image file
+image = Image.open("C:/Users/kng656/Downloads/Fram.jpg")
+
+# Display the image
+image.show()
 
 # Set up the serial connection (adjust the port as needed)
 arduino = serial.Serial('COM11', 9600, timeout=1)
@@ -10,8 +16,8 @@ def show_notification(title, message):
     notification.notify(
         title=title,
         message=message,
-        app_icon='../test/test.txt',  # e.g. 'path/to/icon.png'
-        timeout=10,  # seconds
+        app_icon='C:/Users/kng656/Downloads/Fram.ico',  # e.g. 'path/to/icon.png'
+        timeout=50,  # seconds
     )
 
 print("Waiting for motion detection...")
@@ -22,8 +28,10 @@ while True:
         if message == "Motion detected!":
             print(message)
             show_notification("Motion Detector", "Someone walked past!")
-            time.sleep(3)  # Wait 5 seconds
+            time.sleep(5)  # Wait 5 seconds
+            # Display the image
+            image.show()
             show_notification("Motion Detector", "Fuck you, Kidney")
         elif message == "Motion stopped!":
             print(message)
-    time.sleep(0.1)
+    time.sleep(5)
