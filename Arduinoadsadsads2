@@ -1,0 +1,53 @@
+const int trigPin = 9;  // Trigger pin of the ultrasonic sensor
+const int echoPin = 8;  // Echo pin of the ultrasonic sensor
+
+
+long duration;
+int distance;
+bool motionDetected = false;
+unsigned long lastDetectionTime = 0;
+const unsigned long popupDelay = 5000; // 5 seconds delay for popup
+const int detectionThreshold = 100;  // Distance threshold in cm
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Trigger the ultrasonic sensor
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Read the echo
+  duration = pulseIn(echoPin, HIGH);
+  
+  // Calculate distance
+  distance = duration * 0.034 / 2;
+
+  if (distance < detectionThreshold && !motionDetected) {
+    motionDetected = true;
+    lastDetectionTime = millis();
+
+    Serial.println("Motion detected!");
+  }
+
+  if (motionDetected && (millis() - lastDetectionTime >= popupDelay)) {
+    Serial.println("Fuck you, Kidney");
+    motionDetected = false;
+
+  }
+
+  if (distance >= detectionThreshold && motionDetected) {
+    Serial.println("Motion stopped!");
+    motionDetected = false;
+
+  }
+
+  delay(100);  // Small delay to prevent too frequent readings
+}
