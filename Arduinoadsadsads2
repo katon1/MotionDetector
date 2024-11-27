@@ -1,53 +1,37 @@
-const int trigPin = 9;  // Trigger pin of the ultrasonic sensor
-const int echoPin = 8;  // Echo pin of the ultrasonic sensor
+import serial
+import time
+from plyer import notification
+from PIL import Image
+# Open the image file
+image = Image.open("C:/Users/kng656/Downloads/Fram.jpg")
 
+# Display the image
+image.show()
 
-long duration;
-int distance;
-bool motionDetected = false;
-unsigned long lastDetectionTime = 0;
-const unsigned long popupDelay = 5000; // 5 seconds delay for popup
-const int detectionThreshold = 100;  // Distance threshold in cm
+# Set up the serial connection (adjust the port as needed)
+arduino = serial.Serial('COM11', 9600, timeout=1)
+time.sleep(2)  # Allow time for the connection to establish
 
-void setup() {
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+def show_notification(title, message):
+    notification.notify(
+        title=title,
+        message=message,
+        app_icon='C:/Users/kng656/Downloads/Fram.ico',  # e.g. 'path/to/icon.png'
+        timeout=50,  # seconds
+    )
 
-  Serial.begin(9600);
-}
+print("Waiting for motion detection...")
 
-void loop() {
-  // Trigger the ultrasonic sensor
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-
-  // Read the echo
-  duration = pulseIn(echoPin, HIGH);
-  
-  // Calculate distance
-  distance = duration * 0.034 / 2;
-
-  if (distance < detectionThreshold && !motionDetected) {
-    motionDetected = true;
-    lastDetectionTime = millis();
-
-    Serial.println("Motion detected!");
-  }
-
-  if (motionDetected && (millis() - lastDetectionTime >= popupDelay)) {
-    Serial.println("Fuck you, Kidney");
-    motionDetected = false;
-
-  }
-
-  if (distance >= detectionThreshold && motionDetected) {
-    Serial.println("Motion stopped!");
-    motionDetected = false;
-
-  }
-
-  delay(100);  // Small delay to prevent too frequent readings
-}
+while True:
+    if arduino.in_waiting:
+        message = arduino.readline().decode('utf-8').strip()
+        if message == "Motion detected!":
+            print(message)
+            show_notification("Motion Detector", "Someone walked past!")
+            time.sleep(5)  # Wait 5 seconds
+            # Display the image
+            image.show()
+            show_notification("Motion Detector", "Fuck you, Kidney")
+        elif message == "Motion stopped!":
+            print(message)
+    time.sleep(5)
