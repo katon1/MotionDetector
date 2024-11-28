@@ -1,12 +1,12 @@
-const int trigPin = 9;  // Trigger pin of the ultrasonic sensor
-const int echoPin = 8;  // Echo pin of the ultrasonic sensor
+int TRIG_PIN = 9;  // Trigger pin of the ultrasonic sensor
+int ECHO_PIN = 8;  // Echo pin of the ultrasonic sensor
 
-long duration;
-int distance;
-bool motionDetected = false;
-unsigned long lastDetectionTime = 0;
-const unsigned long popupDelay = 5000; // 5 seconds delay for popup
-const int detectionThreshold = 100;  // Distance threshold in cm
+long duration; // The duration of how long the trigger lasts
+int distance; // Measures how far from the sensor object is
+bool motionDetected = false; // Motion is detected or not (Set to false for it to be naturally off) 
+long lastDetectionTime = 0; // When detection was last detected
+long popupDelay = 5000; // 5 seconds delay for popup
+int detectionThreshold = 100;  // Distance threshold in cm
 
 void setup() {
   pinMode(trigPin, OUTPUT);
