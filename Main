@@ -4,9 +4,9 @@ int ECHO_PIN = 8;  // Echo pin of the ultrasonic sensor
 long duration; // The duration of how long the trigger lasts
 int distance; // Measures how far from the sensor object is
 bool motionDetected = false; // Motion is detected or not (Set to false for it to be naturally off) 
-long lastDetectionTime = 0; // When detection was last detected
+unsigned long lastDetectionTime = 0; // When detection was last detected (For millis() function)
 long popupDelay = 5000; // 5 seconds delay for popup
-int detectionThreshold = 100;  // Distance threshold in cm
+int detectionThreshold = 100;  // Distance threshold in cm @ 100cm (If further than 100cm don't count it) 
 
 void setup() {
   pinMode(TRIG_PIN, OUTPUT);
@@ -16,30 +16,28 @@ void setup() {
 
 void loop() {
   // Trigger the ultrasonic sensor
-  digitalWrite(TRIG_PIN, LOW);
+  digitalWrite(TRIG_PIN, LOW); // This clears the trigger pin 
   delayMicroseconds(2);
-  digitalWrite(TRIG_PIN, HIGH);
+  digitalWrite(TRIG_PIN, HIGH); // This sets the trigger pin for high for 10 microseconds
   delayMicroseconds(10);
   digitalWrite(TRIG_PIN, LOW);
 
-  // Read the echo
+  // Read the echo pin and calculate the distance
   duration = pulseIn(ECHO_PIN, HIGH);
-  
-  // Calculate distance
   distance = duration * 0.034 / 2;
 
-  if (distance < detectionThreshold && !motionDetected) {
-    motionDetected = true;
-    lastDetectionTime = millis();
+  if (distance < detectionThreshold && !motionDetected) { // If the object is closer than 100cm (closer than detectionThreshold) and motion is detected go into this if statement
+    motionDetected = true; // Sets motionDected to true
+    lastDetectionTime = millis(); // Sets the lastDetectionTime to the number of milliseconds passed since the Arduino began running the current program
     Serial.println("Motion detected!");
   }
 
-  if (motionDetected && (millis() - lastDetectionTime >= popupDelay)) {
+  if (motionDetected && (millis() - lastDetectionTime >= popupDelay)) { // If MotionDetected is true and if the time the program has been running - lastdetectionTime is larger or equal to the popup delay then print the message "Fuck you Kidney" and turn the detection to off as Jordan will already of passed the sensor
     Serial.println("Fuck you, Kidney");
     motionDetected = false;
   }
 
-  if (distance >= detectionThreshold && motionDetected) {
+  if (distance >= detectionThreshold && motionDetected) { // if after the distance of the person is greater than the detection threshold and motion detection is false then print "Motion stopped" 
     Serial.println("Motion stopped!");
     motionDetected = false;
   }
