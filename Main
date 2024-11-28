@@ -9,21 +9,21 @@ long popupDelay = 5000; // 5 seconds delay for popup
 int detectionThreshold = 100;  // Distance threshold in cm
 
 void setup() {
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
   Serial.begin(9600);
 }
 
 void loop() {
   // Trigger the ultrasonic sensor
-  digitalWrite(trigPin, LOW);
+  digitalWrite(TRIG_PIN, LOW);
   delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
+  digitalWrite(TRIG_PIN, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
+  digitalWrite(TRIG_PIN, LOW);
 
   // Read the echo
-  duration = pulseIn(echoPin, HIGH);
+  duration = pulseIn(ECHO_PIN, HIGH);
   
   // Calculate distance
   distance = duration * 0.034 / 2;
