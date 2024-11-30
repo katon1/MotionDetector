@@ -4,8 +4,8 @@ int ECHO_PIN = 8;  // Echo pin of the ultrasonic sensor
 long duration; // The duration of how long the trigger lasts
 int distance; // Measures how far from the sensor object is
 bool motionDetected = false; // Motion is detected or not (Set to false for it to be naturally off) 
-unsigned long lastDetectionTime = 0; // When detection was last detected (For millis() function)
-long popupDelay = 5000; // 5 seconds delay for popup
+unsigned long lastDetectionTime = 0; // When detection was last detected (For millis() function), has to be unsigned long because it allows for the count to reach roughly 50 days before overflowing as it stores values for 0 to 4.2 billion
+long popupDelay = 2000; // 2 seconds delay for popup
 int detectionThreshold = 100;  // Distance threshold in cm @ 100cm (If further than 100cm don't count it) 
 
 void setup() {
@@ -15,6 +15,7 @@ void setup() {
 }
 
 void loop() {
+
   // Trigger the ultrasonic sensor
   digitalWrite(TRIG_PIN, LOW); // This clears the trigger pin 
   delayMicroseconds(2);
@@ -37,10 +38,10 @@ void loop() {
     motionDetected = false;
   }
 
-  if (distance >= detectionThreshold && motionDetected) { // if after the distance of the person is greater than the detection threshold and motion detection is false then print "Motion stopped" 
+  if (distance >= detectionThreshold && motionDetected) { // if distance of the person is greater than the detection threshold and motion detection is false then print "Motion stopped" 
     Serial.println("Motion stopped!");
     motionDetected = false;
   }
 
-  delay(100);  // Small delay to prevent too frequent readings
+  delay(5000);  // Small delay to prevent too frequent readings
 }
