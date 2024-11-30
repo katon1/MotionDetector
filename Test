@@ -1,0 +1,50 @@
+int TRIG_PIN = 9;  // Trigger pin of the ultrasonic sensor
+int ECHO_PIN = 8;  // Echo pin of the ultrasonic sensor
+
+long duration; // The duration of how long the trigger lasts
+int distance; // Measures how far from the sensor object is
+bool motionDetected = false; // Motion is detected or not (Set to false for it to be naturally off) 
+int counter = 0; // Counter for delay after motion detection
+int detectionThreshold = 100;  // Distance threshold in cm @ 100cm (If further than 100cm don't count it) 
+
+void setup() {
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Trigger the ultrasonic sensor
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  // Read the echo pin and calculate the distance
+  duration = pulseIn(ECHO_PIN, HIGH);
+  distance = duration * 0.034 / 2;
+
+  if (distance < detectionThreshold && !motionDetected) {
+    motionDetected = true;
+    counter = 0; // Reset counter
+    Serial.println("Motion detected!");
+  }
+
+  if (motionDetected) {
+    counter++;
+    if (counter >= 4) { // After 2 seconds (4 * 500ms delay)
+      Serial.println("Fuck you, Kidney");
+      motionDetected = false;
+      counter = 0;
+    }
+  }
+
+  if (distance >= detectionThreshold && motionDetected) {
+    Serial.println("Motion stopped!");
+    motionDetected = false;
+    counter = 0;
+  }
+
+  delay(500);  // 500ms delay, so 4 counts = 2 seconds
+}
