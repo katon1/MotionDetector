@@ -3,19 +3,19 @@ import time # importing the time library
 from plyer import notification # importing plyer from the notification library
 from PIL import Image # importing PIL from the Image library 
 
-image = Image.open("C:/Users/kng656/Downloads/Fram.jpg") # Sets where to open the image file
-image.show() # Displays the image
+image = Image.open("Fram.jpg") # Sets where to open the image file
+# image.show() # Displays the image
 
 # Set up the serial connection
-arduino = serial.Serial('COM11', 9600, timeout=1) # Allows the communication between the Arduino and computer via COM11 Serial Port
-time.sleep(2)  # Allows time for the connection
+arduino = serial.Serial('COM3', 9600, timeout=1) # Allows the communication between the Arduino and computer via COM3 Serial Port
+time.sleep(4)  # Allows time for the connection
 
 def show_notification(title, message): # This is for the notification to happen on the computer
     notification.notify( # This sets up how the notification will look, title - message and the little icon on the popup (ico file)
         title=title,
         message=message,
-        app_icon='C:/Users/kng656/Downloads/Fram.ico',  # e.g. 'path/to/icon.png'
-        timeout=50,  # waits this time after each notification? (Change after more messing around with it) 
+        app_icon='Fram.ico',  # e.g. 'path/to/icon.png'
+        timeout=30,  # waits this time after each notification? (Change after more messing around with it) 
     )
 
 print("Waiting for motion detection...")
