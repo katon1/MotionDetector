@@ -5,7 +5,7 @@ long duration; // The duration of how long the trigger lasts
 int distance; // Measures how far from the sensor object is
 bool motionDetected = false; // Motion is detected or not (Set to false for it to be naturally off) 
 int counter = 0; // Counter for delay after motion detection
-int detectionThreshold = 100;  // Distance threshold in cm @ 100cm (If further than 100cm don't count it) 
+int detectionThreshold = 80;  // Distance threshold in cm @ 80cm (If further than 80cm don't count it) 
 
 void setup() {
   pinMode(TRIG_PIN, OUTPUT);
