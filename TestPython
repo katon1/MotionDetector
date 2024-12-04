@@ -1,0 +1,35 @@
+import serial # importing the serial library
+import time # importing the time library 
+from plyer import notification # importing plyer from the notification library
+from PIL import Image # importing PIL from the Image library 
+
+image = Image.open("Fram.jpg") # Sets where to open the image file
+# image.show() # Displays the image
+
+# Set up the serial connection
+arduino = serial.Serial('COM3', 9600, timeout=1) # Allows the communication between the Arduino and computer via COM3 Serial Port
+time.sleep(4)  # Allows time for the connection
+
+def show_notification(title, message): # This is for the notification to happen on the computer
+    notification.notify( # This sets up how the notification will look, title - message and the little icon on the popup (ico file)
+        title=title,
+        message=message,
+        app_icon='Fram.ico',  # path for the Icon of the notification 
+        timeout=30,  # waits this time after each notification? (Change after more messing around with it) 
+    )
+
+print("Waiting for motion detection")
+
+while True: # If motion is detected go and do this
+    if arduino.in_waiting:
+        message = arduino.readline().decode('utf-8').strip() # Reads the serial communicated message
+        if message == "Motion detected!": # If motion is detected then message "Motion Detected!" will be printed then a notification will popup on the computer
+            print(message)
+            show_notification("Motion Detector", "Someone walked past!")
+            time.sleep(5)  # Wait 5 seconds
+            # Display the image # After 5 seconds, the image of "Fuck you, Kidney" will show up 
+            image.show()
+            show_notification("Motion Detector", "Fuck you, Kidney") # Decided if i want to keep this or not
+        elif message == "Motion stopped!": # No more motion, just print motion stopped 
+            print(message) 
+    time.sleep(5)
